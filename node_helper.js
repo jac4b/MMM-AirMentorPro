@@ -7,27 +7,57 @@
 
 const NodeHelper = require("node_helper");
 
-const noble = require("noble");
+// const noble = require("noble");
+// const BeaconScanner = require("node-beacon-scanner");
+
+const request = require('request');
 
 
 module.exports = NodeHelper.create({
 
     start: function () {
-        console.log('MMM-AirMentorPro registered');
-        // this.tvoc = 0;
 
-        // noble.startScanning();
         setInterval(function(){
-            console.log('-------AirMentorPro setInterval running');
-            noble.startScanning([], false);
-            noble.on('stateChange', function(state) {
-                console.log('-------noble state changed')
-                    if (state === 'poweredOn') {
-                      noble.startScanning([], false);
-                    }
+            request('http://localhost:7000', function (error, response, body) {
+                console.error('error:', error); // Print the error if one occurred
+                console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                console.log('body:', body); // Print the HTML for the Google homepage.
             });
-        
         }, 10000);
+
+        // console.log("------------testing BeaconScanner")
+        // var scanner = new BeaconScanner();
+
+        // scanner.onadvertisement = (advertisement) => {
+        //     var beacon = advertisement["iBeacon"];
+        //     beacon.rssi = advertisement["rssi"];
+        //     console.log("--------onadvertisement")
+        //     console.log(JSON.stringify(beacon, null, "    "))
+        // };
+        
+        // scanner.startScan().then(() => {
+        //     console.log("Scanning for BLE devices...")  ;
+        // }).catch((error) => {
+        //     console.error(error);
+        // });
+
+
+
+        // console.log('MMM-AirMentorPro registered');
+        // // this.tvoc = 0;
+
+        // // noble.startScanning();
+        // setInterval(function(){
+        //     console.log('-------AirMentorPro setInterval running');
+        //     noble.startScanning([], false);
+        //     noble.on('stateChange', function(state) {
+        //         console.log('-------noble state changed')
+        //             if (state === 'poweredOn') {
+        //               noble.startScanning([], false);
+        //             }
+        //     });
+        
+        // }, 10000);
 
         // noble.on('stateChange', function(state) {
         //     if (state === 'poweredOn') {
