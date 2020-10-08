@@ -3,13 +3,13 @@
 // https://blog.truthlabs.com/beacon-tracking-with-node-js-and-raspberry-pi-794afa880318
 
 
-var tvoc = '0';
+var aqi = '0';
 const http = require('http');
 
 const requestListener = function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.writeHead(200); 
-  var text = "tvoc " + tvoc;
+  var text = aqi;
   res.end(text);
 }
 
@@ -18,8 +18,7 @@ server.listen(7000);
 
 
 const noble = require('noble');
-const target = '';
-// const target = 'ecf00e49334f';
+const target = '';  // pass your macAddress here e.g. ecf00e49334f if device name isn't Air Mentor Pro
 
 noble.startScanning();
 setInterval(function(){noble.stopScanning();noble.startScanning();}, 15000);
@@ -36,63 +35,54 @@ noble.on('discover', function(peripheral) {
     let data = peripheral.advertisement.manufacturerData.toString('hex');
     console.log(data);
 
-    let _tvoc = parseInt(data.slice(4,8), 16);
-    let _iaq = parseInt(data.slice(16,), 16);
-    console.log('tvoc ' + _tvoc);
-    console.log('iaq ' + _iaq); 
+    let id = data.slice(0,4);
+    console.log(id);
+
+    let firstName;
+    let secondName;
     
-    tvoc = _tvoc;
+    let firstData = parseInt(data.slice(4,8), 16);
+    let secondData = parseInt(data.slice(16,), 16);
 
+    let firstDesc;
+    let secondDesc;
 
+    if (id == 2221){
+      if (firstData < 312) { firstDesc = "good" } else
+      if (firstData < 560) { firstDesc = "moderate" } else
+      if (firstData < 1000) { firstDesc = "unhealthy" } else
+      if (firstData < 3000) { firstDesc = "very unhealthy" } else
+      { firstDesc = "worst" };
 
+      if (secondData < 50) { secondDesc = "good" } else
+      if (secondData < 100) { secondDesc = "moderate" } else
+      if (secondData < 150) { secondDesc = "unhealthy" } else
+      if (secondData < 200) { secondDesc = "very unhealthy" } else
+      { secondDesc = "worst" };
 
+      firstName = 'TVOC';
+      secondName = 'IAQ';
+    }
+    else {
+      if (firstData < 800) { firstDesc = "good" } else
+      if (firstData < 1000) { firstDesc = "moderate" } else
+      if (firstData < 2000) { firstDesc = "unhealthy" } else
+      if (firstData < 3000) { firstDesc = "very unhealthy" } else
+      { firstDesc = "worst" };
 
+      if (secondData < 15400) { secondDesc = "good" } else
+      if (secondData < 40400) { secondDesc = "moderate" } else
+      if (secondData < 65500) { secondDesc = "unhealthy" } else
+      if (secondData < 150500) { secondDesc = "very unhealthy" } else
+      { secondDesc = "worst" };
 
+      firstName = 'CO2';
+      secondName = 'PM25';   
+    }
 
-    // console.log(peripheral); 
-
-    // console.log(peripheral.state);
-    // noble.stopScanning();
-    // peripheral.connect(function() {
-
-  //         peripheral.discoverAllServicesAndCharacteristics(function(error, services, characteristics){
-
-  //           if (!error) {
-  //               console.log("[---") 
-  //               console.log("Services: \n" + "["+services+"]")
-  //               console.log("Characteristics: \n" + "[" + characteristics + "]")
-  //               console.log("---]")
-
-  //               var chrRead
-  //               var chrWrite
-  //              services.forEach(function(s, serviceId) {
-  //                 if (s.uuid == settings.UART) {
-  //                   s.characteristics.forEach(function(ch, charId) {
-                        
-  //                     if (ch.uuid === settings.RX) {
-  //                       chrRead = ch
-  //                     } else if (ch.uuid === settings.TX) {
-  //                       chrWrite = ch
-  //                     }
-  //                   })
-  //                 }
-  //               })
-
-  //             if (chrRead != null && chrWrite != null) {
-  //               ready(chrRead, chrWrite)
-  //             } else {
-  //               console.log("no UART service/charactersitics found...")
-  //             }
-  //           } else {
-  //             console.log(error)
-  //           }
-              
-  //         })
-  //      })
-
-
-
-
+    aqi = firstName + ': ' + firstData + ' ' + firstDesc + ' | ' + secondName + ': ' + secondData + ' ' + secondDesc;  
+    console.log(aqi);   
+    // aqi = data; 
 
   }
 

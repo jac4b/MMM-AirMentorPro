@@ -7,12 +7,12 @@ Module.register("MMM-AirMentorPro",{
         
     },
 
-    aqi: 0,
+    aqi: "",
 
 	// Override dom generator.
 	getDom: function() {
 		var wrapper = document.createElement("div");
-        wrapper.innerHTML = "AQI: " + this.aqi;
+        wrapper.innerHTML = this.aqi;
 		return wrapper;
     },
 
@@ -26,6 +26,7 @@ Module.register("MMM-AirMentorPro",{
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     console.log("--------- Received xhr: " + xhr.responseText);
+                    
                     self.aqi = xhr.responseText;
                 }
             }
