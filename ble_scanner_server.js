@@ -80,9 +80,9 @@ noble.on('discover', function(peripheral) {
       secondName = 'PM25';   
     }
 
-    aqi = firstName + ': ' + firstData + ' ' + firstDesc + ' | ' + secondName + ': ' + secondData + ' ' + secondDesc;  
-    console.log(aqi);   
-    // aqi = data; 
+    // aqi = firstName + ': ' + firstData + ' ' + firstDesc + ' | ' + secondName + ': ' + secondData + ' ' + secondDesc;  
+    // console.log(aqi);   
+    aqi = data; 
 
   }
 
