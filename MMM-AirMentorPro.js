@@ -13,57 +13,44 @@ Module.register("MMM-AirMentorPro",{
 	defaults: {
         text: "Hello World!",
         target: '', // 'ecf00e49334f';
-        tvoc: 0
+        
     },
 
+    tvoc: 0,
 
 	// Override dom generator.
 	getDom: function() {
 		var wrapper = document.createElement("div");
         // wrapper.innerHTML = "tvoc " + this.tvoc;
-        wrapper.innerHTML = "tvoc " + this.config.tvoc;
+        wrapper.innerHTML = "tvoc " + this.tvoc;
         console.log("----------AirMentorPro debugging...")
-        console.log(this.config.tvoc);
+        console.log(this.tvoc);
+        console.log(this);
 		return wrapper;
     },
 
     start: function () {
 
         // var tvoc = 1;
+        var self = this;
 
         setInterval(function(){
-
-            // var xhr = new XMLHttpRequest();
-            // xhr.overrideMimeType("application/json");
-            // xhr.open("GET", file, true);
-            // xhr.onreadystatechange = function () {
-            //     if (xhr.readyState === 4 && xhr.status === 200) {
-            //         callback(JSON.parse(stripComments(xhr.responseText)));
-            //     }
-            // };
-            // xhr.send(null);
-
-
+            
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
-                    console.log("---------" + xhr.responseText);
-                    this.config.tvoc = xhr.responseText;
+                    console.log("---------Received xhr: " + xhr.responseText);
+                    // this.tvoc = xhr.responseText;
+                    self.tvoc = xhr.responseText;
+                    console.log(this);
+                    console.log(self);
                 }
             }
             xhr.open('GET', 'http://jeff.local:7000', true);
             xhr.send(null);
+            self.updateDom();
 
 
-
-
-            // request('http://localhost:7000', function (error, response, body) {
-            //     console.error('error:', error); // Print the error if one occurred
-            //     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-            //     console.log('-------------AirMentorPro body:', body); // Print the HTML for the Google homepage.
-            //     this.config.tvoc = body;
-            //     this.updateDom()
-            // });
         }, 10000);
 
     },
